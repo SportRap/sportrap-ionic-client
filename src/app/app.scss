@@ -17,3 +17,15 @@
 .auth-icon{
   font-size: 5.0em;
 }
+.toast-success {
+  text-align: center;
+  > div{
+       background-color:#32db64!important;
+   }
+}
+.toast-fail {
+  text-align: center;
+  > div{
+       background-color:red!important;
+   }
+}

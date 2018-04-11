@@ -7,7 +7,7 @@
   <h1 text-center>
       <ion-icon class="auth-icon"name="person-add" color="primary"></ion-icon>
   </h1>
-  <form  [formGroup]="signupForm"(ngSubmit)="onSubmit(); $event.preventDefault()">
+  <form  [formGroup]="signupForm">
 
     <ion-item>
       <ion-icon name="person" item-left></ion-icon>
@@ -17,6 +17,9 @@
     <ion-item>
       <ion-icon name="at" item-left></ion-icon>
       <ion-input type="text" placeholder="Nome de usuário" formControlName="nomeUsuario"></ion-input>
+      <button ion-button item-right (click)="validUser()">
+        <ion-icon name="checkmark"></ion-icon>
+      </button>
     </ion-item>
 
     <ion-item>
@@ -37,13 +40,13 @@
     <ion-item>
       <ion-icon name="football" item-left></ion-icon>
       <ion-label>Esporte Favorito</ion-label>
-        <ion-select formControlName="esporte_favorito_enum">
-            <ion-option *ngFor="let esporte of esportes" value={{esporte}}>{{esporte}}</ion-option>
+        <ion-select multiple="false" formControlName="esporte_favorito_enum">
+            <ion-option *ngFor="let esporte of esportes" value={{esporte.esporteBanco}}>{{esporte.descricao}}</ion-option>
         </ion-select>
     </ion-item>
 
     <br>
-    <button ion-button full type="submit" [disabled]="signupForm.invalid">Cadastrar</button>
+    <button ion-button full type="submit" [disabled]="signupForm.invalid" (click)="onSubmit()">Cadastrar</button>
 
   </form>
 

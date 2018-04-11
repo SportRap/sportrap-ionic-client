@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {Http ,Response } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { FormBuilder,FormGroup, Validators, FormControl } from '@angular/forms';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {  Toast, IonicPage, NavController, NavParams, ToastController  } from 'ionic-angular';
 
 
 @IonicPage()
@@ -13,16 +13,17 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'signup.html',
 })
 export class SignupPage {
-  const URL='http://sportrap-app.herokuapp.com/';
+  URL='http://sportrap-app.herokuapp.com';
   signupForm: FormGroup;
-  esportes: string=["FUTE","BSQT","VOLQ","FUTS"];
+  esportes: string[]=[];
 
 
   constructor(
     public formBuilder: FormBuilder,
     public navCtrl: NavController,
     public navParams: NavParams,
-    private http : Http) {
+    private http : Http,
+    private toastCtrl: ToastController) {
 
 
       let emailRegex = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
@@ -35,6 +36,7 @@ export class SignupPage {
         dataNascimento:new FormControl('', Validators.compose([Validators.required,Validators.minLength(8)])),
         esporte_favorito_enum:new FormControl('', Validators.required)
       })
+      this.getEsportes();
 
      }
   onSubmit(): void{
@@ -43,8 +45,10 @@ export class SignupPage {
   register(usuario): void{
     this.http.post(this.URL+'/usuario/novo', usuario).subscribe(data => {
         console.log(data)
+        this.presentToast('Usuário cadastrado com sucesso','toast-success');
     }, error => {
         console.log(JSON.stringify(error.json()));
+        this.presentToast('Deu ruim','toast-fail')
     });
   }
   getUsuario(): object{
@@ -57,5 +61,32 @@ export class SignupPage {
    "esporteFavoritoEnum":this.signupForm.controls['esporte_favorito_enum'].value
     };
     return usuario;
-}
+  }
+  presentToast(mensagem,classe) {
+    let toast: Toast = this.createToast();
+    toast.data.message = mensagem;
+    toast.data.cssClass = classe;
+    toast.present();
+  }
+  createToast(): Toast{
+    let toast = this.toastCtrl.create({
+      duration: 3000,
+      position: 'top'
+    });
+    return toast;
+  }
+  validUser(): void{
+        this.http.get(this.URL+'/usuario/novo/nome/', {params: {nomeUsuario : this.signupForm.controls['nomeUsuario'].value}})
+        .map(res => res.json())
+        .subscribe(data => {
+            console.log(data);
+          });
+  }
+  getEsportes(): void{
+        this.http.get(this.URL+'/evento/descricaoEsportes')
+        .map(res => res.json())
+        .subscribe(data => {
+            this.esportes = data;
+          });
+        }
 }
