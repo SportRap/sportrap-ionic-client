@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http } from '@angular/http';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { FormBuilder,FormGroup, Validators, FormControl } from '@angular/forms';
-import {  Toast, IonicPage, NavController, NavParams, ToastController  } from 'ionic-angular';
+import { Toast, IonicPage, NavController, NavParams, ToastController  } from 'ionic-angular';
 
 
 @IonicPage()
@@ -16,6 +16,7 @@ export class SignupPage {
   URL='http://sportrap-app.herokuapp.com';
   signupForm: FormGroup;
   esportes: string[]=[];
+  usuarioValido: boolean=false;
 
 
   constructor(
@@ -40,7 +41,9 @@ export class SignupPage {
 
      }
   onSubmit(): void{
-  this.register(this.getUsuario());
+    if (this.validUser()){
+      this.register(this.getUsuario());
+    }
   }
   register(usuario): void{
     this.http.post(this.URL+'/usuario/novo', usuario).subscribe(data => {
@@ -75,12 +78,13 @@ export class SignupPage {
     });
     return toast;
   }
-  validUser(): void{
-        this.http.get(this.URL+'/usuario/novo/nome/', {params: {nomeUsuario : this.signupForm.controls['nomeUsuario'].value}})
+  validUser(): Boolean{
+        this.http.get(this.URL+'/usuario/novo/nome/'+ this.signupForm.controls['nomeUsuario'].value , )
         .map(res => res.json())
         .subscribe(data => {
-            console.log(data);
+           return data;
           });
+          return false;
   }
   getEsportes(): void{
         this.http.get(this.URL+'/evento/descricaoEsportes')
