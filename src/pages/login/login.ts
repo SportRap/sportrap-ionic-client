@@ -16,7 +16,7 @@ export class LoginPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
   }
-  onSignup(): void{
+  onSignup(): void {
     this.navCtrl.push(SignupPage)
 
   }
